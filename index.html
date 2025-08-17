@@ -271,7 +271,6 @@ const quill = new Quill('#quillEditor', {
   const editorEl = document.getElementById('editor');
   const editorModal = new bootstrap.Modal(editorEl);
   const postTitle = document.getElementById('postTitle');
-  const postContent = document.getElementById('postContent');
   const editorTitle = document.getElementById('editorTitle');
   const btnSavePost = document.getElementById('btnSavePost');
 
@@ -336,14 +335,13 @@ const quill = new Quill('#quillEditor', {
   // === 3) CRUD POSTS ===
   btnOpenNew.addEventListener('click', ()=> openEditor());
 
-  function openEditor(post=null){
+function openEditor(post=null){
     editingId = post?.id || null;
     editorTitle.textContent = editingId ? 'Edit Posting' : 'Tulis Posting';
     postTitle.value = post?.title || '';
-    postContent.value = post?.content || '';
+    quill.root.innerHTML = post?.content || '';
     editorModal.show();
-  }
-
+}
   btnSavePost.addEventListener('click', async ()=> {
   if(!session) return msg('Harus login.');
   const title = postTitle.value.trim();
