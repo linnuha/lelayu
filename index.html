@@ -355,6 +355,39 @@ async function editPost(id){
 // Init
 refreshSession(); loadPosts();
 </script>
+<script>// Minta reset password
+async function requestReset(email){
+  const token = generateToken();
+  const expires = new Date(Date.now() + 15*60*1000).toISOString();
+
+  const { error } = await client.from('password_resets').insert({ email, token, expires_at: expires });
+  if(error) return msg(error.message);
+
+  msg(`Token reset dibuat. Token: ${token}`); // di real app, kirim via email
+}
+
+// Reset password
+async function resetPassword(email, token, newPassword){
+  const { data, error } = await client.from('password_resets')
+    .select('*')
+    .eq('email', email)
+    .eq('token', token)
+    .eq('used', false)
+    .gte('expires_at', new Date().toISOString())
+    .single();
+
+  if(error || !data) return msg('Token invalid atau kadaluarsa.');
+
+  // hash password sederhana (untuk demo)
+  const password_hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(newPassword));
+  const hashHex = Array.from(new Uint8Array(password_hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
+
+  await client.from('users_custom').update({ password_hash: hashHex }).eq('email', email);
+  await client.from('password_resets').update({ used: true }).eq('id', data.id);
+
+  msg('Password berhasil diubah!');
+}
+</script>
 
 </body>
 </html>
