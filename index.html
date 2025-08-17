@@ -372,8 +372,7 @@ const quill = new Quill('#quillEditor', {
   }
 
   // Render satu kartu post
-  <p class="card-text flex-fill">${p.content}</p>
-  function postCard(p){
+    function postCard(p){
     const mine = session && session.user.id === p.user_id;
     return `
     <div class="col-12 col-md-6">
