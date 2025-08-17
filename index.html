@@ -1,24 +1,26 @@
 <!doctype html>
-<html lang="id">
+<html lang="id" data-bs-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Starter Bootstrap + Supabase</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
 <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
 <style>
-body{background:#f8fafc;}
+body{background:linear-gradient(180deg,#f8fafc 0,#ffffff 100%);}
 .glass{backdrop-filter:saturate(180%) blur(8px); background:rgba(255,255,255,.7);}
 .card{border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 25px rgba(2,6,23,.06);}
 .rounded-2xl{border-radius:1.25rem;}
 .btn-soft{background:#f3f4f6; border:1px solid #e5e7eb;}
 .btn-soft:hover{background:#e5e7eb;}
-.brand-gradient{background:linear-gradient(90deg,#2563eb,#9333ea); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;}
-.badge-soft{background:#eef2ff; color:#3730a3;}
-.container-narrow{max-width:980px;}
-.form-floating>label{color:#6b7280;}
-.empty{border:2px dashed #e5e7eb; border-radius:1rem; padding:2rem; color:#6b7280;}
+.brand-gradient{background:linear-gradient(90deg,#2563eb,#9333ea);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.badge-soft{background:#eef2ff;color:#3730a3;}
+.cursor-pointer{cursor:pointer}
+.container-narrow{max-width:980px}
+.form-floating>label{color:#6b7280}
+.empty{border:2px dashed #e5e7eb;border-radius:1rem;padding:2rem;color:#6b7280}
 </style>
 </head>
 <body>
@@ -26,75 +28,89 @@ body{background:#f8fafc;}
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg glass sticky-top shadow-sm">
 <div class="container container-narrow">
-<span class="navbar-brand fw-bold brand-gradient">Bootstrap ✕ Supabase</span>
-<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"><span class="navbar-toggler-icon"></span></button>
-<div class="collapse navbar-collapse" id="navMain">
-<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-<li class="nav-item"><a class="nav-link active" href="#">Beranda</a></li>
-</ul>
-<div class="d-flex align-items-center gap-2">
-<span id="userEmail" class="text-secondary small d-none"></span>
-<button id="btnOpenNew" class="btn btn-primary btn-sm d-none"><i class="bi bi-plus-lg me-1"></i>Tulis</button>
-<button id="btnAuth" class="btn btn-dark btn-sm">Masuk / Daftar</button>
-<button id="btnLogout" class="btn btn-outline-secondary btn-sm d-none">Keluar</button>
-</div>
-</div>
+  <span class="navbar-brand fw-bold brand-gradient">Bootstrap ✕ Supabase</span>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navMain">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <li class="nav-item"><a class="nav-link active" href="#">Beranda</a></li>
+    </ul>
+    <div class="d-flex align-items-center gap-2">
+      <span id="userEmail" class="text-secondary small d-none"></span>
+      <button id="btnOpenNew" class="btn btn-primary btn-sm d-none"><i class="bi bi-plus-lg me-1"></i>Tulis</button>
+      <button id="btnAuth" class="btn btn-dark btn-sm">Masuk / Daftar</button>
+      <button id="btnLogout" class="btn btn-outline-secondary btn-sm d-none">Keluar</button>
+    </div>
+  </div>
 </div>
 </nav>
 
 <!-- Hero -->
 <header class="py-5 mb-4">
 <div class="container container-narrow">
-<div class="p-4 p-md-5 bg-white rounded-2xl card">
-<div class="row align-items-center g-4">
-<div class="col-md-8">
-<h1 class="display-6 fw-bold mb-2">Starter Website Elegan</h1>
-<p class="mb-3 text-secondary">Bootstrap 5 + Supabase. CRUD posting siap pakai, Auth, dan WYSIWYG editor.</p>
-<span class="badge badge-soft rounded-pill me-2">Gratis</span>
-<span class="badge badge-soft rounded-pill">Open Source</span>
-</div>
-<div class="col-md-4 text-md-end">
-<button class="btn btn-primary" id="ctaStart"><i class="bi bi-rocket-takeoff me-2"></i>Mulai Tulis</button>
-</div>
-</div>
-</div>
+  <div class="p-4 p-md-5 bg-white rounded-2xl card">
+    <div class="row align-items-center g-4">
+      <div class="col-md-8">
+        <h1 class="display-6 fw-bold mb-2">Starter Website Elegan</h1>
+        <p class="mb-3 text-secondary">Bootstrap 5 + Supabase (Postgres, Auth, REST) di-host gratis di GitHub Pages. Sudah siap CRUD posting.</p>
+        <span class="badge badge-soft rounded-pill me-2">Gratis</span>
+        <span class="badge badge-soft rounded-pill">Open Source</span>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <button class="btn btn-primary" id="ctaStart"><i class="bi bi-rocket-takeoff me-2"></i>Mulai Tulis</button>
+      </div>
+    </div>
+  </div>
 </div>
 </header>
 
-<!-- Form Auth -->
-<div class="container container-narrow mb-4">
+<!-- Main -->
+<main class="container container-narrow mb-5">
+
+<!-- Auth -->
 <div id="authBox" class="card rounded-2xl mb-4 d-none">
 <div class="card-body">
 <div class="row g-4">
-<div class="col-md-6">
-<h5 class="mb-3">Daftar</h5>
-<div class="form-floating mb-2"><input type="email" class="form-control" id="suEmail" placeholder="email"><label for="suEmail">Email</label></div>
-<div class="form-floating mb-3"><input type="password" class="form-control" id="suPassword" placeholder="password"><label for="suPassword">Password</label></div>
-<button class="btn btn-primary w-100" id="btnSignUp">Buat Akun</button>
-<small class="text-secondary d-block mt-2">Sudah punya akun? Masuk di kanan.</small>
-</div>
-<div class="col-md-6">
-<h5 class="mb-3">Masuk</h5>
-<div class="form-floating mb-2"><input type="email" class="form-control" id="siEmail" placeholder="email"><label for="siEmail">Email</label></div>
-<div class="form-floating mb-2"><input type="password" class="form-control" id="siPassword" placeholder="password"><label for="siPassword">Password</label></div>
-<button class="btn btn-dark w-100" id="btnSignIn">Masuk</button>
-<small class="text-secondary d-block mt-2"><a href="#" id="forgotPass">Lupa Password?</a></small>
-</div>
-</div>
+  <div class="col-md-6">
+    <h5 class="mb-3">Daftar</h5>
+    <div class="form-floating mb-2">
+      <input type="email" class="form-control" id="suEmail" placeholder="email">
+      <label for="suEmail">Email</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="password" class="form-control" id="suPassword" placeholder="password">
+      <label for="suPassword">Password</label>
+    </div>
+    <button class="btn btn-primary w-100" id="btnSignUp">Buat Akun</button>
+    <small class="text-secondary d-block mt-2">Sudah punya akun? Masuk di kanan.</small>
+  </div>
+  <div class="col-md-6">
+    <h5 class="mb-3">Masuk</h5>
+    <div class="form-floating mb-2">
+      <input type="email" class="form-control" id="siEmail" placeholder="email">
+      <label for="siEmail">Email</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="password" class="form-control" id="siPassword" placeholder="password">
+      <label for="siPassword">Password</label>
+    </div>
+    <button class="btn btn-dark w-100" id="btnSignIn">Masuk</button>
+    <small class="text-secondary d-block mt-2 cursor-pointer" id="btnForgot">Lupa sandi? Klik di sini.</small>
+  </div>
 </div>
 </div>
 </div>
 
 <!-- Posts -->
-<main class="container container-narrow mb-5">
 <div class="d-flex align-items-center justify-content-between mb-3">
 <h4 class="m-0">Posting Terbaru</h4>
 <div>
-<select id="sortSelect" class="form-select form-select-sm" style="width:auto; display:inline-block">
-<option value="newest">Terbaru</option>
-<option value="oldest">Terlama</option>
-<option value="mine">Punya Saya</option>
-</select>
+  <select id="sortSelect" class="form-select form-select-sm" style="width:auto; display:inline-block">
+    <option value="newest">Terbaru</option>
+    <option value="oldest">Terlama</option>
+    <option value="mine">Punya Saya</option>
+  </select>
 </div>
 </div>
 
@@ -108,9 +124,10 @@ body{background:#f8fafc;}
 <li class="page-item"><a class="page-link" id="nextPage" href="#">Berikutnya</a></li>
 </ul>
 </nav>
+
 </main>
 
-<!-- Modal Editor -->
+<!-- Editor Modal -->
 <div class="modal fade" id="editor" tabindex="-1">
 <div class="modal-dialog modal-lg modal-dialog-centered">
 <div class="modal-content rounded-2xl">
@@ -119,8 +136,13 @@ body{background:#f8fafc;}
 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <div class="modal-body">
-<div class="form-floating mb-2"><input type="text" class="form-control" id="postTitle" placeholder="Judul"><label for="postTitle">Judul</label></div>
-<div class="mb-3"><div id="quillEditor" style="height:200px;"></div></div>
+<div class="form-floating mb-2">
+<input type="text" class="form-control" id="postTitle" placeholder="Judul">
+<label for="postTitle">Judul</label>
+</div>
+<div class="form-floating mb-3">
+<div id="quillEditor" style="height: 200px;"></div>
+</div>
 </div>
 <div class="modal-footer">
 <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
@@ -140,20 +162,18 @@ body{background:#f8fafc;}
 </div>
 </div>
 
-<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-
+<script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
 <script>
 // === 1) KONFIGURASI SUPABASE ===
 const SUPABASE_URL = "https://eltuoqlqsvtvcwhpkbbz.supabase.co"; // ganti
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdHVvcWxxc3Z0dmN3aHBrYmJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1NjE0MjUsImV4cCI6MjA2ODEzNzQyNX0.eHMoIeeihLuoKKST5K04FaPEguRdas5L2BsEV2ek3w0"; // ganti
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-// === 2) INISIALISASI ===
-document.title = "Starter Bootstrap + Supabase";
+// === 2) INISIALISASI UI ===
+document.body.classList.add('bg-light');
 
-// UI Elements
+// --- UI Components ---
 const btnAuth = document.getElementById('btnAuth');
 const btnLogout = document.getElementById('btnLogout');
 const userEmail = document.getElementById('userEmail');
@@ -175,145 +195,159 @@ const btnSavePost = document.getElementById('btnSavePost');
 const toastEl = document.getElementById('toast');
 const toastMsg = document.getElementById('toastMsg');
 const toast = new bootstrap.Toast(toastEl, { delay: 2000 });
-const forgotPass = document.getElementById('forgotPass');
-
-// Quill
-const quill = new Quill('#quillEditor', {theme:'snow', placeholder:'Tulis konten posting...', modules:{toolbar:[[{header:[1,2,3,false]}],['bold','italic','underline','strike'],[{list:'ordered'},{list:'bullet'}],['link','image'],['clean']]}});
+const btnForgot = document.getElementById('btnForgot');
 
 let session = null;
 let editingId = null;
 let page = 1;
-const PAGE_SIZE=6;
+const PAGE_SIZE = 6;
+
+const quill = new Quill('#quillEditor', {
+  theme: 'snow', placeholder:'Tulis konten posting...', 
+  modules:{toolbar:[[{ header: [1,2,3,false] }],['bold','italic','underline','strike'],[{ list:'ordered'},{ list:'bullet' }],['link','image'],['clean']]}
+});
 
 function msg(text){ toastMsg.textContent=text; toast.show(); }
 
+// --- AUTH ---
 async function refreshSession(){
   const { data:{session:s} } = await client.auth.getSession();
-  session=s;
-  const logged=!!session;
-  userEmail.classList.toggle('d-none',!logged);
-  btnLogout.classList.toggle('d-none',!logged);
-  btnOpenNew.classList.toggle('d-none',!logged);
-  btnAuth.classList.toggle('d-none',logged);
-  if(logged){ userEmail.textContent=`Halo, ${session.user.email}`; authBox.classList.add('d-none'); }
-  else{ userEmail.textContent=''; }
+  session = s;
+  const logged = !!session;
+  userEmail.classList.toggle('d-none', !logged);
+  btnLogout.classList.toggle('d-none', !logged);
+  btnOpenNew.classList.toggle('d-none', !logged);
+  btnAuth.classList.toggle('d-none', logged);
+  if(logged) userEmail.textContent=`Halo, ${session.user.email}`;
+  else userEmail.textContent='';
 }
 
 // Sign Up
 document.getElementById('btnSignUp').addEventListener('click', async ()=>{
-  const email=document.getElementById('suEmail').value.trim();
-  const password=document.getElementById('suPassword').value.trim();
+  const email = document.getElementById('suEmail').value.trim();
+  const password = document.getElementById('suPassword').value.trim();
   if(!email||!password) return msg('Isi email & password.');
-  const { error }=await client.auth.signUp({ email,password });
+  const { error } = await client.auth.signUp({ email,password });
   if(error) return msg(error.message);
-  msg('Akun dibuat. Cek email untuk konfirmasi.');
+  msg('Akun dibuat. Cek email jika perlu verifikasi.');
 });
 
 // Sign In
 document.getElementById('btnSignIn').addEventListener('click', async ()=>{
-  const email=document.getElementById('siEmail').value.trim();
-  const password=document.getElementById('siPassword').value.trim();
+  const email = document.getElementById('siEmail').value.trim();
+  const password = document.getElementById('siPassword').value.trim();
   if(!email||!password) return msg('Isi email & password.');
-  const { data,error }=await client.auth.signInWithPassword({ email,password });
+  const { error } = await client.auth.signInWithPassword({ email,password });
   if(error) return msg(error.message);
-  session=data.session;
-  refreshSession();
-  msg('Berhasil login.');
+  await refreshSession();
+  await loadPosts();
+  msg('Masuk berhasil.');
 });
 
 // Logout
 btnLogout.addEventListener('click', async ()=>{
   await client.auth.signOut();
-  session=null;
-  refreshSession();
-  msg('Keluar berhasil.');
+  await refreshSession();
+  await loadPosts();
 });
 
-// Toggle Auth Form
-btnAuth.addEventListener('click', ()=> authBox.classList.toggle('d-none') );
-ctaStart.addEventListener('click', ()=> btnOpenNew.click());
+// Toggle authBox
+btnAuth.addEventListener('click', ()=> authBox.classList.toggle('d-none'));
+ctaStart.addEventListener('click', ()=>{ if(!session){ authBox.classList.remove('d-none'); msg('Masuk dulu ya.'); return; } openEditor(); });
 
-// Forgot Password
-forgotPass.addEventListener('click', async(e)=>{
-  e.preventDefault();
-  const email=prompt('Masukkan email Anda:');
+// Forgot password
+btnForgot.addEventListener('click', async ()=>{
+  const email = prompt('Masukkan email akun:');
   if(!email) return;
-  const { data,error }=await client.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/reset.html'});
+  const { data, error } = await client.auth.resetPasswordForEmail(email,{ redirectTo: location.href });
   if(error) return msg(error.message);
-  msg('Link reset password sudah dikirim ke email Anda.');
+  msg('Cek email untuk set password baru.');
 });
 
-// Post CRUD
-btnOpenNew.addEventListener('click', ()=>{
-  editingId=null;
-  postTitle.value='';
-  quill.setContents([{insert:'\n'}]);
-  editorTitle.textContent='Tulis Posting Baru';
-  editorModal.show();
-});
+// --- POSTS ---
+async function loadPosts(){
+  let filter = sortSelect.value;
+  let query = client.from('posts').select('*').order('created_at',{ ascending:false });
+  if(filter==='mine' && session) query = query.eq('user_id',session.user.id);
+  const { data, error } = await query.range((page-1)*PAGE_SIZE,page*PAGE_SIZE-1);
+  if(error) return msg(error.message);
+  postsWrap.innerHTML='';
+  if(!data||!data.length){ empty.classList.remove('d-none'); pager.classList.add('d-none'); return; }
+  empty.classList.add('d-none'); pager.classList.remove('d-none');
+  pageInfo.textContent = page;
+  data.forEach(post=>{
+    const card = document.createElement('div');
+    card.className='col-md-6';
+    card.innerHTML=`
+      <div class="card p-3 rounded-2xl">
+        <h5>${post.title}</h5>
+        <div>${post.content}</div>
+        ${session && session.user.id===post.user_id ? `<div class="mt-2 text-end">
+          <button class="btn btn-sm btn-soft me-1 edit" data-id="${post.id}"><i class="bi bi-pencil"></i></button>
+          <button class="btn btn-sm btn-soft delete" data-id="${post.id}"><i class="bi bi-trash"></i></button>
+        </div>` : ''}
+      </div>
+    `;
+    postsWrap.appendChild(card);
+  });
+
+  document.querySelectorAll('.edit').forEach(btn=>{
+    btn.addEventListener('click',()=>openEditor(btn.dataset.id));
+  });
+  document.querySelectorAll('.delete').forEach(btn=>{
+    btn.addEventListener('click',async ()=>{
+      if(!confirm('Hapus posting?')) return;
+      const { error } = await client.from('posts').delete().eq('id',btn.dataset.id);
+      if(error) return msg(error.message);
+      msg('Posting dihapus.');
+      loadPosts();
+    });
+  });
+}
+
+// Pagination
+prevPage.addEventListener('click', e=>{ e.preventDefault(); if(page>1){ page--; loadPosts(); }});
+nextPage.addEventListener('click', e=>{ e.preventDefault(); page++; loadPosts();});
+sortSelect.addEventListener('change', ()=>{ page=1; loadPosts(); });
+
+// --- Editor ---
+function openEditor(id=null){
+  editingId=id;
+  if(id){
+    editorTitle.textContent='Edit Posting';
+    client.from('posts').select('*').eq('id',id).single().then(r=>{
+      if(r.error) return msg(r.error.message);
+      postTitle.value=r.data.title;
+      quill.root.innerHTML=r.data.content;
+      editorModal.show();
+    });
+  } else{
+    editorTitle.textContent='Tulis Posting';
+    postTitle.value='';
+    quill.root.innerHTML='';
+    editorModal.show();
+  }
+}
 
 btnSavePost.addEventListener('click', async ()=>{
-  const title=postTitle.value.trim();
-  const content=quill.root.innerHTML;
-  if(!title) return msg('Isi judul posting.');
-  if(!content||content=='<p><br></p>') return msg('Isi konten posting.');
+  const title = postTitle.value.trim();
+  const content = quill.root.innerHTML;
+  if(!title||!content) return msg('Judul & konten tidak boleh kosong.');
   if(editingId){
-    const { error }=await client.from('posts').update({title,content}).eq('id',editingId);
+    const { error } = await client.from('posts').update({ title, content }).eq('id', editingId);
     if(error) return msg(error.message);
     msg('Posting diperbarui.');
-  }else{
-    const { error }=await client.from('posts').insert({title,content,user_id:session.user.id});
+  } else {
+    const { error } = await client.from('posts').insert([{ title, content, user_id:session.user.id }]);
     if(error) return msg(error.message);
-    msg('Posting berhasil dibuat.');
+    msg('Posting dibuat.');
   }
   editorModal.hide();
   loadPosts();
 });
 
-// Load posts
-async function loadPosts(){
-  let filter={};
-  if(sortSelect.value==='mine') filter={user_id:session?.user?.id};
-  const { data,error }=await client.from('posts').select('*').order('created_at',{ascending:false});
-  postsWrap.innerHTML='';
-  if(error){ empty.classList.remove('d-none'); return; }
-  if(!data.length){ empty.classList.remove('d-none'); return; }
-  empty.classList.add('d-none');
-  data.forEach(post=>{
-    const card=document.createElement('div');
-    card.className='col-md-6';
-    card.innerHTML=`<div class="card rounded-2xl p-3">
-      <h5>${post.title}</h5>
-      <div>${post.content}</div>
-      ${session?.user?.id===post.user_id?`<div class="mt-2"><button class="btn btn-sm btn-outline-primary me-1 editBtn">Edit</button><button class="btn btn-sm btn-outline-danger delBtn">Hapus</button></div>`:''}
-    </div>`;
-    postsWrap.appendChild(card);
-    if(session?.user?.id===post.user_id){
-      card.querySelector('.editBtn').addEventListener('click', ()=>{
-        editingId=post.id;
-        postTitle.value=post.title;
-        quill.root.innerHTML=post.content;
-        editorTitle.textContent='Edit Posting';
-        editorModal.show();
-      });
-      card.querySelector('.delBtn').addEventListener('click', async()=>{
-        if(!confirm('Hapus posting ini?')) return;
-        const { error }=await client.from('posts').delete().eq('id',post.id);
-        if(error) return msg(error.message);
-        msg('Posting dihapus.');
-        loadPosts();
-      });
-    }
-  });
-}
-
-sortSelect.addEventListener('change', loadPosts);
-
-// Init
-refreshSession();
-loadPosts();
-
+// --- Init ---
+refreshSession().then(loadPosts);
 </script>
-
 </body>
 </html>
