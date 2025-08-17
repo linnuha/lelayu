@@ -1,28 +1,37 @@
 <!doctype html>
 <html lang="id" data-bs-theme="light">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Starter Bootstrap + Supabase (Bebas Error)</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
-<style>
-body{background:linear-gradient(180deg,#f8fafc 0,#ffffff 100%);}
-.glass{backdrop-filter:saturate(180%) blur(8px); background:rgba(255,255,255,.7);}
-.card{border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 25px rgba(2,6,23,.06);}
-.rounded-2xl{border-radius:1.25rem;}
-.btn-soft{background:#f3f4f6; border:1px solid #e5e7eb;}
-.btn-soft:hover{background:#e5e7eb;}
-.brand-gradient{background:linear-gradient(90deg,#2563eb,#9333ea);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
-.badge-soft{background:#eef2ff; color:#3730a3;}
-.cursor-pointer{cursor:pointer}
-.container-narrow{max-width:980px}
-.form-floating>label{color:#6b7280}
-.empty{border:2px dashed #e5e7eb; border-radius:1rem; padding:2rem; color:#6b7280}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Starter Bootstrap + Supabase (Gratis & Elegan)</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Quill CSS -->
+  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+  <style>
+    body{background:linear-gradient(180deg,#f8fafc 0,#ffffff 100%);} 
+    .glass{backdrop-filter:saturate(180%) blur(8px); background:rgba(255,255,255,.7);}
+    .card{border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 25px rgba(2,6,23,.06);}
+    .rounded-2xl{border-radius:1.25rem;}
+    .btn-soft{background:#f3f4f6; border:1px solid #e5e7eb;}
+    .btn-soft:hover{background:#e5e7eb;}
+    .brand-gradient{
+      background:linear-gradient(90deg,#2563eb,#9333ea);
+      -webkit-background-clip:text;
+      background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+    .badge-soft{background:#eef2ff; color:#3730a3;}
+    .cursor-pointer{cursor:pointer}
+    .container-narrow{max-width:980px}
+    .form-floating>label{color:#6b7280}
+    .empty{border:2px dashed #e5e7eb; border-radius:1rem; padding:2rem; color:#6b7280}
+  </style>
 </head>
 <body>
+
+<!-- Quill JS -->
+<script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg glass sticky-top shadow-sm">
@@ -52,7 +61,7 @@ body{background:linear-gradient(180deg,#f8fafc 0,#ffffff 100%);}
       <div class="row align-items-center g-4">
         <div class="col-md-8">
           <h1 class="display-6 fw-bold mb-2">Starter Website Elegan</h1>
-          <p class="mb-3 text-secondary">Bootstrap 5 + Supabase di-host gratis di GitHub Pages. CRUD siap pakai.</p>
+          <p class="mb-3 text-secondary">Bootstrap 5 + Supabase (Postgres, Auth, REST) di-host gratis di GitHub Pages. Sudah siap untuk CRUD posting sederhana.</p>
           <span class="badge badge-soft rounded-pill me-2">Gratis</span>
           <span class="badge badge-soft rounded-pill">Open Source</span>
         </div>
@@ -64,66 +73,65 @@ body{background:linear-gradient(180deg,#f8fafc 0,#ffffff 100%);}
   </div>
 </header>
 
+<!-- Konten -->
 <main class="container container-narrow mb-5">
-
-<!-- Form Auth -->
-<div id="authBox" class="card rounded-2xl mb-4 d-none">
-  <div class="card-body">
-    <div class="row g-4">
-      <div class="col-md-6">
-        <h5 class="mb-3">Daftar</h5>
-        <div class="form-floating mb-2">
-          <input type="email" class="form-control" id="suEmail" placeholder="email">
-          <label for="suEmail">Email</label>
+  <!-- Form Auth -->
+  <div id="authBox" class="card rounded-2xl mb-4 d-none">
+    <div class="card-body">
+      <div class="row g-4">
+        <div class="col-md-6">
+          <h5 class="mb-3">Daftar</h5>
+          <div class="form-floating mb-2">
+            <input type="email" class="form-control" id="suEmail" placeholder="email">
+            <label for="suEmail">Email</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="suPassword" placeholder="password">
+            <label for="suPassword">Password</label>
+          </div>
+          <button class="btn btn-primary w-100" id="btnSignUp">Buat Akun</button>
+          <small class="text-secondary d-block mt-2">Sudah punya akun? Masuk di kanan.</small>
         </div>
-        <div class="form-floating mb-3">
-          <input type="password" class="form-control" id="suPassword" placeholder="password">
-          <label for="suPassword">Password</label>
+        <div class="col-md-6">
+          <h5 class="mb-3">Masuk</h5>
+          <div class="form-floating mb-2">
+            <input type="email" class="form-control" id="siEmail" placeholder="email">
+            <label for="siEmail">Email</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="siPassword" placeholder="password">
+            <label for="siPassword">Password</label>
+          </div>
+          <button class="btn btn-dark w-100" id="btnSignIn">Masuk</button>
+          <small class="text-secondary d-block mt-2">Lupa sandi? Atur di Supabase (Reset Password).</small>
         </div>
-        <button class="btn btn-primary w-100" id="btnSignUp">Buat Akun</button>
-        <small class="text-secondary d-block mt-2">Sudah punya akun? Masuk di kanan.</small>
-      </div>
-      <div class="col-md-6">
-        <h5 class="mb-3">Masuk</h5>
-        <div class="form-floating mb-2">
-          <input type="email" class="form-control" id="siEmail" placeholder="email">
-          <label for="siEmail">Email</label>
-        </div>
-        <div class="form-floating mb-3">
-          <input type="password" class="form-control" id="siPassword" placeholder="password">
-          <label for="siPassword">Password</label>
-        </div>
-        <button class="btn btn-dark w-100" id="btnSignIn">Masuk</button>
-        <small class="text-secondary d-block mt-2">Lupa sandi? Atur di Supabase (Reset Password).</small>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Daftar Post -->
-<div class="d-flex align-items-center justify-content-between mb-3">
-  <h4 class="m-0">Posting Terbaru</h4>
-  <div>
-    <select id="sortSelect" class="form-select form-select-sm" style="width:auto; display:inline-block">
-      <option value="newest">Terbaru</option>
-      <option value="oldest">Terlama</option>
-      <option value="mine">Punya Saya</option>
-    </select>
+  <!-- Daftar Post -->
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h4 class="m-0">Posting Terbaru</h4>
+    <div>
+      <select id="sortSelect" class="form-select form-select-sm" style="width:auto; display:inline-block">
+        <option value="newest">Terbaru</option>
+        <option value="oldest">Terlama</option>
+        <option value="mine">Punya Saya</option>
+      </select>
+    </div>
   </div>
-</div>
 
-<div id="posts" class="row g-3"></div>
-<div id="empty" class="empty text-center d-none"><i class="bi bi-inboxes me-2"></i>Belum ada posting.</div>
+  <div id="posts" class="row g-3"></div>
+  <div id="empty" class="empty text-center d-none"><i class="bi bi-inboxes me-2"></i>Belum ada posting.</div>
 
-<!-- Pagination -->
-<nav id="pager" class="d-flex justify-content-center mt-4 d-none">
-  <ul class="pagination">
-    <li class="page-item"><a class="page-link" id="prevPage" href="#">Sebelumnya</a></li>
-    <li class="page-item disabled"><span class="page-link" id="pageInfo">1</span></li>
-    <li class="page-item"><a class="page-link" id="nextPage" href="#">Berikutnya</a></li>
-  </ul>
-</nav>
-
+  <!-- Pagination sederhana -->
+  <nav id="pager" class="d-flex justify-content-center mt-4 d-none">
+    <ul class="pagination">
+      <li class="page-item"><a class="page-link" id="prevPage" href="#">Sebelumnya</a></li>
+      <li class="page-item disabled"><span class="page-link" id="pageInfo">1</span></li>
+      <li class="page-item"><a class="page-link" id="nextPage" href="#">Berikutnya</a></li>
+    </ul>
+  </nav>
 </main>
 
 <!-- Modal Editor -->
@@ -132,7 +140,7 @@ body{background:linear-gradient(180deg,#f8fafc 0,#ffffff 100%);}
     <div class="modal-content rounded-2xl">
       <div class="modal-header">
         <h5 class="modal-title" id="editorTitle">Tulis Posting</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="form-floating mb-2">
@@ -140,7 +148,7 @@ body{background:linear-gradient(180deg,#f8fafc 0,#ffffff 100%);}
           <label for="postTitle">Judul</label>
         </div>
         <div class="form-floating mb-3">
-          <div id="quillEditor" style="height:200px;"></div>
+          <div id="quillEditor" style="height: 200px;"></div>
         </div>
       </div>
       <div class="modal-footer">
@@ -151,28 +159,27 @@ body{background:linear-gradient(180deg,#f8fafc 0,#ffffff 100%);}
   </div>
 </div>
 
-<!-- Toast -->
+<!-- Toasts -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index:1080">
   <div id="toast" class="toast align-items-center text-bg-dark border-0" role="alert">
     <div class="d-flex">
       <div class="toast-body" id="toastMsg">OK</div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
   </div>
 </div>
 
-<!-- JS -->
+<!-- Bootstrap & Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
+
 <script>
-// Supabase config
-const SUPABASE_URL = "https://eltuoqlqsvtvcwhpkbbz.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdHVvcWxxc3Z0dmN3aHBrYmJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1NjE0MjUsImV4cCI6MjA2ODEzNzQyNX0.eHMoIeeihLuoKKST5K04FaPEguRdas5L2BsEV2ek3w0";
-// Ganti dengan project URL & anon key kamu
+// === 1) KONFIGURASI SUPABASE ===
+const SUPABASE_URL = "https://eltuoqlqsvtvcwhpkbbz.supabase.co"; // ganti
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdHVvcWxxc3Z0dmN3aHBrYmJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1NjE0MjUsImV4cCI6MjA2ODEzNzQyNX0.eHMoIeeihLuoKKST5K04FaPEguRdas5L2BsEV2ek3w0"; // ganti
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// UI Elements
+// Komponen UI
 const btnAuth = document.getElementById('btnAuth');
 const btnLogout = document.getElementById('btnLogout');
 const userEmail = document.getElementById('userEmail');
@@ -203,25 +210,24 @@ let editingId = null;
 let page = 1;
 const PAGE_SIZE = 6;
 
-// Quill Editor
+// --- Quill ---
 const quill = new Quill('#quillEditor', {
   theme: 'snow',
   placeholder: 'Tulis konten posting...',
   modules: {
     toolbar: [
-      [{ header: [1,2,3,false] }],
-      ['bold','italic','underline','strike'],
-      [{ list:'ordered'}, { list:'bullet' }],
-      ['link','image'],
+      [{ header: [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ list: 'ordered'}, { list: 'bullet' }],
+      ['link', 'image'],
       ['clean']
     ]
   }
 });
 
-// Toast helper
-function msg(text){ toastMsg.textContent=text; toast.show(); }
+function msg(text){ toastMsg.textContent = text; toast.show(); }
 
-// --- AUTH ---
+// === AUTH ===
 async function refreshSession(){
   const { data: { session: s } } = await client.auth.getSession();
   session = s;
@@ -232,23 +238,22 @@ async function refreshSession(){
   btnOpenNew.classList.toggle('d-none', !logged);
   btnAuth.classList.toggle('d-none', logged);
 
-  if(logged) userEmail.textContent = `Halo, ${session.user.email}`;
-  else userEmail.textContent = '';
+  userEmail.textContent = logged ? `Halo, ${session.user.email}` : '';
 }
 
 document.getElementById('btnSignUp').addEventListener('click', async ()=>{
   const email = document.getElementById('suEmail').value.trim();
   const password = document.getElementById('suPassword').value.trim();
-  if(!email||!password) return msg('Isi email & password.');
+  if(!email || !password) return msg('Isi email & password.');
   const { error } = await client.auth.signUp({ email, password });
   if(error) return msg(error.message);
-  msg('Akun dibuat. Cek email jika perlu verifikasi.');
+  msg('Akun dibuat. Cek inbox email jika perlu verifikasi.');
 });
 
 document.getElementById('btnSignIn').addEventListener('click', async ()=>{
   const email = document.getElementById('siEmail').value.trim();
   const password = document.getElementById('siPassword').value.trim();
-  if(!email||!password) return msg('Isi email & password.');
+  if(!email || !password) return msg('Isi email & password.');
   const { error } = await client.auth.signInWithPassword({ email, password });
   if(error) return msg(error.message);
   await refreshSession();
@@ -262,11 +267,14 @@ btnLogout.addEventListener('click', async ()=>{
   await loadPosts();
 });
 
-btnAuth.addEventListener('click', ()=> authBox.classList.toggle('d-none'));
-ctaStart.addEventListener('click', ()=>{ if(!session){ authBox.classList.remove('d-none'); msg('Masuk dulu ya.'); return; } openEditor(); });
+btnAuth.addEventListener('click', ()=>{ authBox.classList.toggle('d-none'); });
+ctaStart.addEventListener('click', ()=>{
+  if(!session){ authBox.classList.remove('d-none'); msg('Masuk dulu ya.'); return; }
+  openEditor();
+});
 btnOpenNew.addEventListener('click', ()=> openEditor());
 
-// --- CRUD ---
+// === CRUD POSTS ===
 function openEditor(post=null){
   editingId = post?.id || null;
   editorTitle.textContent = editingId ? 'Edit Posting' : 'Tulis Posting';
@@ -279,7 +287,7 @@ btnSavePost.addEventListener('click', async ()=>{
   if(!session) return msg('Harus login.');
   const title = postTitle.value.trim();
   const content = quill.root.innerHTML.trim();
-  if(!title||!content) return msg('Lengkapi judul & isi.');
+  if(!title || !content) return msg('Lengkapi judul & isi.');
 
   if(editingId){
     const { error } = await client.from('posts').update({ title, content }).eq('id', editingId);
@@ -302,8 +310,11 @@ async function removePost(id){
   await loadPosts();
 }
 
+// Render post rapi, bebas <p>XZZxZX</p>
 function postCard(p){
-  const mine = session && session.user.id===p.user_id;
+  const mine = session && session.user.id === p.user_id;
+  // Bisa pilih tampilkan HTML Quill atau text saja
+  const content = p.content || '';
   return `
   <div class="col-12 col-md-6">
     <div class="card h-100 rounded-2xl">
@@ -312,8 +323,8 @@ function postCard(p){
           <h5 class="card-title mb-0">${escapeHtml(p.title)}</h5>
           <span class="badge text-bg-light">${new Date(p.created_at).toLocaleString()}</span>
         </div>
-        <p class="card-text flex-fill">${escapeHtml(p.content)}</p>
-        <div class="d-flex gap-2 ${mine? '':'d-none'}">
+        <p class="card-text flex-fill">${content}</p>
+        <div class="d-flex gap-2 ${mine? '' : 'd-none'}">
           <button class="btn btn-soft btn-sm" data-id="${p.id}" data-action="edit"><i class="bi bi-pencil"></i></button>
           <button class="btn btn-outline-danger btn-sm" data-id="${p.id}" data-action="delete"><i class="bi bi-trash"></i></button>
         </div>
@@ -322,46 +333,52 @@ function postCard(p){
   </div>`;
 }
 
-function escapeHtml(str){ return str.replace(/[&<>'"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\'':'&#39;','"':'&quot;'}[c])); }
-
-function setPage(n){ if(n<1) return; page=n; }
-prevPage.addEventListener('click', e=>{ e.preventDefault(); if(page>1){ setPage(page-1); loadPosts(); } });
-nextPage.addEventListener('click', e=>{ e.preventDefault(); setPage(page+1); loadPosts(); });
-sortSelect.addEventListener('change', ()=>{ setPage(1); loadPosts(); });
-
-async function loadPosts(){
-  postsWrap.innerHTML = '';
-  const sort = sortSelect.value;
-  let query = client.from('posts').select('*', { count: 'exact' });
-  if(sort==='newest') query = query.order('created_at',{ascending:false});
-  if(sort==='oldest') query = query.order('created_at',{ascending:true});
-  if(sort==='mine' && session) query = query.eq('user_id',session.user.id).order('created_at',{ascending:false});
-
-  const from=(page-1)*PAGE_SIZE; const to=from+PAGE_SIZE-1;
-  const { data, error, count } = await query.range(from,to);
-  if(error){ msg(error.message); return; }
-  if(!data||data.length===0){ empty.classList.remove('d-none'); pager.classList.add('d-none'); return; }
-  empty.classList.add('d-none');
-  postsWrap.innerHTML = data.map(postCard).join('');
-  pager.classList.toggle('d-none', count<=PAGE_SIZE);
-  pageInfo.textContent = `${page} / ${Math.ceil(count/PAGE_SIZE)}`;
-
-  // Attach event listeners
-  postsWrap.querySelectorAll('button[data-action]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const id = btn.getAttribute('data-id');
-      const action = btn.getAttribute('data-action');
-      const post = data.find(x=>x.id===id);
-      if(action==='edit') openEditor(post);
-      if(action==='delete') removePost(id);
-    });
-  });
+// Escaper sederhana untuk judul
+function escapeHtml(str){
+  return str.replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\'':'&#39;','\"':'&quot;'}[c]));
 }
 
-// --- Init ---
+// Pagination & load posts
+function setPage(n){ if(n<1) return; page = n; }
+prevPage.addEventListener('click', e=>{ e.preventDefault(); setPage(page-1); loadPosts(); });
+nextPage.addEventListener('click', e=>{ e.preventDefault(); setPage(page+1); loadPosts(); });
+
+async function loadPosts(){
+  const { data, error } = await client.from('posts').select('*').order('created_at',{ascending:false});
+  if(error) return msg(error.message);
+
+  let filtered = data;
+  const sort = sortSelect.value;
+  if(sort==='mine') filtered = filtered.filter(p=>p.user_id===session?.user?.id);
+  else if(sort==='oldest') filtered = filtered.sort((a,b)=> new Date(a.created_at)-new Date(b.created_at));
+
+  const start = (page-1)*PAGE_SIZE;
+  const end = start+PAGE_SIZE;
+  const paged = filtered.slice(start,end);
+
+  postsWrap.innerHTML = paged.map(postCard).join('');
+  empty.classList.toggle('d-none', paged.length>0);
+  pager.classList.toggle('d-none', filtered.length <= PAGE_SIZE);
+  pageInfo.textContent = `${page}`;
+}
+
+// Delegate edit/delete
+postsWrap.addEventListener('click', async e=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const id = btn.dataset.id;
+  if(btn.dataset.action==='edit'){
+    const { data } = await client.from('posts').select('*').eq('id', id).single();
+    openEditor(data);
+  } else if(btn.dataset.action==='delete') removePost(id);
+});
+
+sortSelect.addEventListener('change', ()=> loadPosts());
+
+// === INIT ===
 refreshSession();
 loadPosts();
-
 </script>
+
 </body>
 </html>
