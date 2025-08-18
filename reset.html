@@ -49,72 +49,70 @@
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdHVvcWxxc3Z0dmN3aHBrYmJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1NjE0MjUsImV4cCI6MjA2ODEzNzQyNX0.eHMoIeeihLuoKKST5K04FaPEguRdas5L2BsEV2ek3w0';
     const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-    document.getElementById('resetForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const newPassword = document.getElementById('newPassword').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
-      const messageEl = document.getElementById('message');
-      
-      // Validasi
-      if (newPassword !== confirmPassword) {
-        showMessage('Password tidak cocok', 'danger');
-        return;
-      }
+   document.getElementById('resetForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const newPassword = document.getElementById('newPassword').value;
+  const confirmPassword = document.getElementById('confirmPassword').value;
+  
+  if (newPassword !== confirmPassword) {
+    showMessage('Password tidak cocok', 'danger');
+    return;
+  }
 
-      try {
-        // Ekstrak token dari URL hash
-        const hash = window.location.hash.substring(1);
-        const params = new URLSearchParams(hash);
-        const accessToken = params.get('access_token');
-        const tokenType = params.get('token_type');
-        const type = params.get('type');
+  try {
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    const accessToken = params.get('access_token');
+    const tokenType = params.get('token_type');
 
-        if (type !== 'recovery' || !accessToken) {
-          throw new Error('Token reset tidak valid');
-        }
+    // 1. Update password melalui API Supabase
+    const { data: user, error: updateError } = await supabase.auth.api.updateUser(
+      accessToken,
+      { password: newPassword },
+      { tokenType: tokenType }
+    );
 
-        // Set session dengan token
-        const { error: authError } = await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: '',
-          token_type: tokenType
-        });
+    if (updateError) throw updateError;
 
-        if (authError) throw authError;
+    // 2. Panggil fungsi custom untuk log perubahan
+    const { error: logError } = await logPasswordChange(user.id);
+    if (logError) console.error("Gagal mencatat perubahan:", logError);
 
-        // Update password
-        const { error: updateError } = await supabase.auth.updateUser({
-          password: newPassword
-        });
+    // 3. Kirim notifikasi email
+    const { error: notifyError } = await sendPasswordChangeNotification(user.email);
+    if (notifyError) console.error("Gagal mengirim notifikasi:", notifyError);
 
-        if (updateError) throw updateError;
+    showMessage('Password berhasil diperbarui!', 'success');
+    setTimeout(() => window.location.href = '/', 2000);
 
-        showMessage('Password berhasil diperbarui!', 'success');
-        setTimeout(() => {
-          window.location.href = 'https://linnuha.github.io/lelayu/';
-        }, 2000);
-      } catch (error) {
-        console.error('Error:', error);
-        showMessage(error.message || 'Gagal memperbarui password', 'danger');
-      }
-    });
+  } catch (error) {
+    console.error('Error:', error);
+    showMessage(error.message || 'Gagal memperbarui password', 'danger');
+  }
+});
 
-    function showMessage(text, type) {
-      const messageEl = document.getElementById('message');
-      messageEl.textContent = text;
-      messageEl.className = `alert alert-${type}`;
-      messageEl.classList.remove('d-none');
-    }
+// Fungsi untuk mencatat perubahan password
+async function logPasswordChange(userId) {
+  return await supabase
+    .from('password_changes')
+    .insert([{ 
+      user_id: userId, 
+      changed_at: new Date().toISOString() 
+    }]);
+}
 
-    // Cek token saat halaman dimuat
-    document.addEventListener('DOMContentLoaded', () => {
-      const hash = window.location.hash.substring(1);
-      if (!hash.includes('type=recovery')) {
-        showMessage('Link reset password tidak valid atau sudah kadaluarsa', 'danger');
-        document.getElementById('resetForm').style.display = 'none';
-      }
-    });
+// Fungsi untuk mengirim notifikasi
+async function sendPasswordChangeNotification(email) {
+  return await supabase
+    .from('notifications')
+    .insert([{
+      recipient: email,
+      type: 'password_change',
+      message: 'Password Anda telah diubah',
+      created_at: new Date().toISOString()
+    }]);
+}
   </script>
 </body>
 </html>
