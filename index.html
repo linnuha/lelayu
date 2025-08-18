@@ -151,6 +151,7 @@ body{background:linear-gradient(180deg,#f8fafc 0,#ffffff 100%);}
 </div>
 </div>
 </div>
+
 <!-- Password Reset Modal -->
 <div class="modal fade" id="resetPasswordModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
@@ -163,14 +164,6 @@ body{background:linear-gradient(180deg,#f8fafc 0,#ffffff 100%);}
         <div class="form-floating mb-3">
           <input type="email" class="form-control" id="resetEmail" placeholder="Email">
           <label for="resetEmail">Email</label>
-        </div>
-        <div class="form-floating mb-3">
-          <input type="password" class="form-control" id="newPassword" placeholder="New Password">
-          <label for="newPassword">New Password</label>
-        </div>
-        <div class="form-floating mb-3">
-          <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password">
-          <label for="confirmPassword">Confirm Password</label>
         </div>
       </div>
       <div class="modal-footer">
@@ -225,6 +218,7 @@ const toastEl = document.getElementById('toast');
 const toastMsg = document.getElementById('toastMsg');
 const toast = new bootstrap.Toast(toastEl, { delay: 2000 });
 const btnForgot = document.getElementById('btnForgot');
+const btnResetPassword = document.getElementById('btnResetPassword');
 
 let session = null;
 let editingId = null;
@@ -282,51 +276,51 @@ btnLogout.addEventListener('click', async ()=>{
 
 // Toggle authBox
 btnAuth.addEventListener('click', ()=> authBox.classList.toggle('d-none'));
-ctaStart.addEventListener('click', ()=>{ if(!session){ authBox.classList.remove('d-none'); msg('Masuk dulu ya.'); return; } openEditor(); });
+ctaStart.addEventListener('click', ()=>{ 
+  if(!session){ 
+    authBox.classList.remove('d-none'); 
+    msg('Masuk dulu ya.'); 
+    return; 
+  } 
+  openEditor(); 
+});
+
+btnOpenNew.addEventListener('click', () => {
+  if (!session) {
+    authBox.classList.remove('d-none');
+    msg('Silakan masuk terlebih dahulu.');
+    return;
+  }
+  openEditor();
+});
 
 // Forgot password
 btnForgot.addEventListener('click', () => {
-  // Hide authBox and show resetPasswordModal
   authBox.classList.add('d-none');
   const resetModal = new bootstrap.Modal(document.getElementById('resetPasswordModal'));
   resetModal.show();
 });
 
-// Add new event listener for password reset
-document.getElementById('btnResetPassword').addEventListener('click', async () => {
+// Password reset
+btnResetPassword.addEventListener('click', async () => {
   const email = document.getElementById('resetEmail').value.trim();
-  const newPassword = document.getElementById('newPassword').value.trim();
-  const confirmPassword = document.getElementById('confirmPassword').value.trim();
   
-  if (!email) return msg('Please enter your email.');
-  if (!newPassword) return msg('Please enter a new password.');
-  if (newPassword !== confirmPassword) return msg('Passwords do not match.');
-  if (newPassword.length < 6) return msg('Password must be at least 6 characters.');
+  if (!email) return msg('Silakan masukkan email Anda.');
   
   try {
-    // Update the user's password directly
-    const { error } = await client.auth.updateUser({
-      email: email,
-      password: newPassword
+    const { error } = await client.auth.resetPasswordForEmail(email, {
+      redirectTo: `${location.origin}/reset.html`
     });
     
     if (error) throw error;
     
-    msg('Password updated successfully. Please sign in with your new password.');
+    msg('Email reset password telah dikirim. Silakan cek kotak masuk Anda.');
     
-    // Hide the reset modal
     const resetModal = bootstrap.Modal.getInstance(document.getElementById('resetPasswordModal'));
     resetModal.hide();
-    
-    // Clear the form fields
     document.getElementById('resetEmail').value = '';
-    document.getElementById('newPassword').value = '';
-    document.getElementById('confirmPassword').value = '';
-    
-    // Show the auth box
-    authBox.classList.remove('d-none');
   } catch (error) {
-    msg(error.message || 'Error resetting password.');
+    msg(error.message || 'Terjadi kesalahan saat mereset password.');
   }
 });
 
