@@ -152,8 +152,8 @@ body{background:linear-gradient(180deg,#f8fafc 0,#ffffff 100%);}
 </div>
 </div>
 
-<!-- Password Reset Modal -->
-<div class="modal fade" id="resetPasswordModal" tabindex="-1">
+<!-- Password Reset Request Modal -->
+<div class="modal fade" id="resetRequestModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content rounded-2xl">
       <div class="modal-header">
@@ -167,8 +167,34 @@ body{background:linear-gradient(180deg,#f8fafc 0,#ffffff 100%);}
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button class="btn btn-primary" id="btnResetPassword">Reset Password</button>
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+        <button class="btn btn-primary" id="btnResetRequest">Kirim Reset Password</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Password Reset Modal -->
+<div class="modal fade" id="resetPasswordModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-2xl">
+      <div class="modal-header">
+        <h5 class="modal-title">Password Baru</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-floating mb-3">
+          <input type="password" class="form-control" id="newPassword" placeholder="Password Baru">
+          <label for="newPassword">Password Baru</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="password" class="form-control" id="confirmPassword" placeholder="Konfirmasi Password">
+          <label for="confirmPassword">Konfirmasi Password</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+        <button class="btn btn-primary" id="btnUpdatePassword">Perbarui Password</button>
       </div>
     </div>
   </div>
@@ -218,7 +244,10 @@ const toastEl = document.getElementById('toast');
 const toastMsg = document.getElementById('toastMsg');
 const toast = new bootstrap.Toast(toastEl, { delay: 2000 });
 const btnForgot = document.getElementById('btnForgot');
-const btnResetPassword = document.getElementById('btnResetPassword');
+const resetRequestModal = new bootstrap.Modal(document.getElementById('resetRequestModal'));
+const resetPasswordModal = new bootstrap.Modal(document.getElementById('resetPasswordModal'));
+const btnResetRequest = document.getElementById('btnResetRequest');
+const btnUpdatePassword = document.getElementById('btnUpdatePassword');
 
 let session = null;
 let editingId = null;
@@ -296,33 +325,85 @@ btnOpenNew.addEventListener('click', () => {
 
 // Forgot password
 btnForgot.addEventListener('click', () => {
-  authBox.classList.add('d-none');
-  const resetModal = new bootstrap.Modal(document.getElementById('resetPasswordModal'));
-  resetModal.show();
+  resetRequestModal.show();
 });
 
-// Password reset
-btnResetPassword.addEventListener('click', async () => {
+// Password reset request
+btnResetRequest.addEventListener('click', async () => {
   const email = document.getElementById('resetEmail').value.trim();
   
   if (!email) return msg('Silakan masukkan email Anda.');
   
   try {
     const { error } = await client.auth.resetPasswordForEmail(email, {
-      redirectTo: `${location.origin}/reset.html`
+      redirectTo: `${window.location.origin}/reset.html`
     });
     
     if (error) throw error;
     
     msg('Email reset password telah dikirim. Silakan cek kotak masuk Anda.');
     
-    const resetModal = bootstrap.Modal.getInstance(document.getElementById('resetPasswordModal'));
-    resetModal.hide();
+    resetRequestModal.hide();
     document.getElementById('resetEmail').value = '';
   } catch (error) {
-    msg(error.message || 'Terjadi kesalahan saat mereset password.');
+    msg(error.message || 'Terjadi kesalahan saat mengirim email reset.');
   }
 });
+
+// Update password
+btnUpdatePassword.addEventListener('click', async () => {
+  const newPassword = document.getElementById('newPassword').value.trim();
+  const confirmPassword = document.getElementById('confirmPassword').value.trim();
+
+  if (!newPassword || !confirmPassword) {
+    return msg('Silakan isi password baru dan konfirmasinya.');
+  }
+
+  if (newPassword !== confirmPassword) {
+    return msg('Password dan konfirmasi password tidak sama.');
+  }
+
+  try {
+    const { error } = await client.auth.updateUser({
+      password: newPassword
+    });
+    
+    if (error) throw error;
+    
+    msg('Password berhasil diperbarui. Silakan masuk dengan password baru Anda.');
+    
+    resetPasswordModal.hide();
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmPassword').value = '';
+  } catch (error) {
+    msg(error.message || 'Terjadi kesalahan saat memperbarui password.');
+  }
+});
+
+// Check for password recovery token in the URL
+async function checkRecoveryToken() {
+  // Periksa apakah ada token reset password di URL
+  const urlParams = new URLSearchParams(window.location.hash.substring(1));
+  const type = urlParams.get('type');
+  
+  if (type === 'recovery') {
+    const accessToken = urlParams.get('access_token');
+    
+    if (accessToken) {
+      // Simpan token untuk digunakan nanti
+      window.recoveryToken = accessToken;
+      
+      // Tampilkan modal reset password
+      resetPasswordModal.show();
+      
+      // Bersihkan URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }
+}
+
+// Panggil saat inisialisasi
+checkRecoveryToken();
 
 // --- POSTS ---
 async function loadPosts(){
