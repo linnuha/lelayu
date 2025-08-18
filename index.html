@@ -328,7 +328,7 @@ btnForgot.addEventListener('click', () => {
   resetRequestModal.show();
 });
 
-// Password reset request
+// Ganti bagian ini di index.html
 btnResetRequest.addEventListener('click', async () => {
   const email = document.getElementById('resetEmail').value.trim();
   
@@ -336,15 +336,13 @@ btnResetRequest.addEventListener('click', async () => {
   
   try {
     const { error } = await client.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset.html`
+      redirectTo: 'https://linnuha.github.io/reset.html'
     });
     
     if (error) throw error;
     
     msg('Email reset password telah dikirim. Silakan cek kotak masuk Anda.');
-    
     resetRequestModal.hide();
-    document.getElementById('resetEmail').value = '';
   } catch (error) {
     msg(error.message || 'Terjadi kesalahan saat mengirim email reset.');
   }

@@ -44,7 +44,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // Ganti dengan URL dan key Supabase Anda
+    // Ganti dengan URL dan key Anda
     const SUPABASE_URL = "https://eltuoqlqsvtvcwhpkbbz.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdHVvcWxxc3Z0dmN3aHBrYmJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1NjE0MjUsImV4cCI6MjA2ODEzNzQyNX0.eHMoIeeihLuoKKST5K04FaPEguRdas5L2BsEV2ek3w0";
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -72,28 +72,18 @@
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(hash);
         const accessToken = params.get('access_token');
-        const tokenType = params.get('token_type');
         const type = params.get('type');
         
         if (type !== 'recovery' || !accessToken) {
           throw new Error('Link reset tidak valid');
         }
         
-        // Set session dengan token
-        const { error } = await client.auth.setSession({
-          access_token: accessToken,
-          refresh_token: '',
-          token_type: tokenType
-        });
-        
-        if (error) throw error;
-        
-        // Update password
-        const { error: updateError } = await client.auth.updateUser({
+        // Langsung update password tanpa set session
+        const { error } = await client.auth.api.updateUser(accessToken, {
           password: newPassword
         });
         
-        if (updateError) throw updateError;
+        if (error) throw error;
         
         showMessage('Password berhasil diperbarui! Silakan login dengan password baru Anda.', 'success');
         document.getElementById('form').style.display = 'none';
@@ -116,7 +106,7 @@
     }
 
     // Cek token saat halaman dimuat
-    window.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
       const hash = window.location.hash.substring(1);
       if (!hash.includes('type=recovery')) {
         showMessage('Link reset password tidak valid atau sudah kadaluarsa', 'danger');
