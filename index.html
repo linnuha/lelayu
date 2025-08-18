@@ -336,7 +336,7 @@ btnResetRequest.addEventListener('click', async () => {
   
   try {
     const { error } = await client.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://linnuha.github.io/reset.html'
+      redirectTo: 'https://linnuha.github.io/lelayu/reset.html'
     });
     
     if (error) throw error;
